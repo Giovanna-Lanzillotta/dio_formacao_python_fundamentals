@@ -1,0 +1,5 @@
+ENCAPSULAMENTO
+
+PÚBLICO: Pode ser acessado de fora da classe.
+PRIVADO: Só pode ser acessado pela classe.
+
