@@ -3,3 +3,14 @@ ENCAPSULAMENTO
 PÚBLICO: Pode ser acessado de fora da classe.
 PRIVADO: Só pode ser acessado pela classe.
 
+A função property() é a engrenagem por trás do decorador @property. Ela é usada para criar propriedades em uma classe, permitindo que você defina métodos que serão acessados como se fossem atributos simples.
+Ela serve para implementar o encapsulamento de forma elegante: você protege o dado internamente, mas mantém a facilidade de uso para quem utiliza a classe.
+
+O decorador @property é a forma mais "pythônica" de implementar getters e setters. Ele transforma um método em um atributo que pode ser acessado sem parênteses, permitindo que você execute lógica (validação, log, cálculos) no momento em que alguém tenta ler ou alterar um valor.
+
+O @x.setter é o parceiro do @property. Enquanto o @property controla a leitura (get), o @setter controla a escrita (set).
+
+Ele permite que você execute uma função de validação ou processamento sempre que alguém tentar usar o sinal de igual (=) para mudar o valor de um atributo.
+
+O @x.deleter é o terceiro e menos comum integrante do trio de propriedades do Python (junto com o @property e o @x.setter). Ele é acionado quando você usa o comando del em um atributo.
+Sua função principal no encapsulamento não é apenas "apagar" o dado, mas sim garantir que a limpeza ocorra de forma segura ou realizar ações colaterais antes de o atributo sumir.
