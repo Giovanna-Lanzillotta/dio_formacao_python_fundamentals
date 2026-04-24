@@ -1,0 +1,21 @@
+# Introspecção
+# Capacidade de um um objeto saber sobre seus próprios atributos em tempo de execução.
+
+def meu_decorador(funcao):
+    def envelope(*args, **kwargs):
+        print("Faz algo antes de executar a função")
+        resultado = funcao(*args, **kwargs)
+        print("Faz algo depois de executar a função")
+        return resultado
+
+    return envelope
+    
+@meu_decorador
+def ola_mundo(nome, outro_argumento):
+    print(f"Olá mundo! {nome}")
+    return nome.upper()
+
+
+resultado = ola_mundo('João', 1000)
+print(resultado)
+print(ola_mundo.__name__)
