@@ -33,7 +33,20 @@ class ContaIterador:
 class Cliente:
     def __init__(self, endereco):
         self.endereco = endereco
-        self.conta = []
+        self.conta = [] # cria uma lista vazia para armazenar as conta de um cliente
+        self.indice_conta = 0 # contador para saber o numero de contas
+
+    def realizar_transacao(self, conta, transacao):
+        if len(conta.historico.transacoes_do_dia()) >= 10: #Conta o numero de transacoes do dia e caso
+            # o resultado for maior ou igual 10 ele mostra uma mensagem de alerta.
+            print("\n@@@ ❗❗❗ Você excedeu o número de transações permitidas para hoje! ❗❗❗ @@@")
+            return
+
+        transacao.registrar(conta) # Adiciona na conta e atualiza o saldo
+
+    # Conecta uma conta nova a ym cliente específico
+    def adicionar_conta(self, conta):
+        self.contas.append(conta) # Pega a conta criada e adiciona na lista 'self.contas' do cliente
 #Fim da classe Cliente
 
 
@@ -100,7 +113,23 @@ class Historico:
         for transacao in self._transacoes:
             if tipo_transacao is None or transacao["tipo"].lower() == tipo_transacao.lower():
                 yield transacao
-# fim da classe Historico
+
+    
+    def transacoes_do_dia(self):
+        data_atual = datetime.utcnow().date()
+
+        # Cria uma lista vazia para guardar a informação de hoje
+        transacoes = []
+        for transacao in self.transacoes:
+            data_transacao = datetime.strptime(transacao["data"], "%d-%m-%Y %H:%M:%S").date()
+
+            # Confere se a data da transacao é igual a data de hoje
+            if data_atual == data_transacao:
+                transacoes.append(transacao) # Se sim adiciona na lista
+
+        return transacao # após percorrer tudo retorna a lista cheia ou vazia
+        
+    # fim da classe Historico
 
 
 #---- inicio das classes de transação-------
@@ -141,6 +170,8 @@ def filtar_cliente(cpf, clientes):
             return cliente # Caso encontre ele irá retornar o cliente encontrado
     return None # Se o loop acabar e não encontrar o cliente ele irá retornar None
 
+def recuperar_conta_cliente(cliente):
+    pass
 
 @log_transacao
 def depositar(clientes):
@@ -152,7 +183,33 @@ def sacar(clientes):
 
 @log_transacao
 def exibir_extrato(clientes):
-    pass
+    cpf = input("Informe o CPF do cliente:  ")
+
+    # Usa a função filtar_clientes para achar o objeto 'cliente' na lista.
+    cliente = filtar_cliente(cpf, clientes) 
+
+    if not cliente:
+        print("\n@@@ ❌Cliente não encontrado! ❌~@@@")
+        return
+    conta = recuperar_conta_cliente(cliente)
+    if not conta:
+        return
+
+    print("========== EXTRATO ==========")
+    extrato = ""
+    tem_transacao = False
+    for transacao in conta.historico.gerar_relatorio():
+        tem_transacao = True
+        extrato += f"\n{transacao['data']}\n{transacao['tipo']}:\n\tR$ {transacao['valor']:.2f}"
+
+    if not tem_transacao:
+        extrato = "💫 Não foram realizadas movimentações 💫"
+
+    
+    print(extrato)
+    print(f"\nSaldo:\n\tR$ {conta.saldo:.2f}")
+    print("==============================")
+
 
 @log_transacao
 def criar_cliente(clientes):
