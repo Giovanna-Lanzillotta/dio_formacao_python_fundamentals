@@ -4,16 +4,28 @@ import textwrap
 from abc import ABC,abstractclassmethod, abstractproperty
 from datetime import datetime
 
+# Aqui esta a parte do iterador personalizado
 # Inicio da classe ContaIterador
 class ContaIterador:
     def __init__(self, contas):
-        pass
+        self.contas = contas
+        self._contador = 0
 
     def __iter__(self):
-        pass
+        return self
 
     def __next__(self):
-        pass
+        try:
+            conta = self.contas[self._contador]
+            self._contador +=1
+            return f"""
+            🏦 Agência:\t{conta.agencia}
+            🏧Número:\t{conta.numero}
+            👤 Titular:\t{conta.cliente.nome}
+            💰 Saldo:\t{conta.saldo:.2f}
+            """
+        except IndexError:
+            raise StopIteration
 # Fim da classe ContaIterador
 
 
@@ -59,8 +71,11 @@ class Historico:
             }
         )
     
+    # Aqui esta a implementação do gerador
     def gerar_relatorio(self, tipo_transacao=None):
-        pass
+        for transacao in self._transacoes:
+            if tipo_transacao is None or transacao["tipo"].lower() == tipo_transacao.lower():
+                yield transacao
 # fim da classe Historico
 
 
@@ -82,8 +97,14 @@ class Deposito:
 # Fim da classe Deposito
 
 
+# Aqui esta a parte de decorador de Log
 def log_transacao(func):
-    pass
+    def envelope(*args, **kwargs):
+        resultado = func(*args, **kwargs)
+        data_hora = datetime.now.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{data_hora}] Função executada: {func.__name__}")
+        return resultado
+    return envelope
 
 
 def menu():
@@ -115,8 +136,8 @@ def criar_conta(numero_conta, clientes, contas):
 
 
 def listar_contas(contas):
-    # TODO : alterar implementação, para utilizar a classe ContaIterador
-    for conta in contas:
+    # utilizando o ContaIterador
+    for conta in ContaIterador(contas):
         print("=" * 100)
         print(textwrap.dedent(str(conta)))
 
