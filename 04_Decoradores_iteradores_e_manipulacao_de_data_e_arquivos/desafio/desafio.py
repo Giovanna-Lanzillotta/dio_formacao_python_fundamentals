@@ -31,21 +31,45 @@ class ContaIterador:
 
 # Inicio da classe Cliente
 class Cliente:
-    pass
+    def __init__(self, endereco):
+        self.endereco = endereco
+        self.conta = []
 #Fim da classe Cliente
 
 
 # Inicio da classe Pessoa Fisica
 class PessoaFisica(Cliente):
-    pass
+    def __init__(self, nome, cpf, data_nascimento, endereco):
+        # super() foi usado para chamar o construtor da classe pai Cliente
+        super().__init__(endereco)
+        self.nome = nome
+        self.cpf = cpf
+        self.data_nascimento = data_nascimento
 #Fim da classe Pessoa Fisica
 
 
 # Inicio da classe Conta
 class Conta:
-    pass
+    def __init__(self, numero, cliente):
+        self._saldo = 0
+        self._numero = numero
+        self._agencia = "0001"
+        self._cliente = cliente
+        self._historico = Historico()
 # Fim da classe Conta
 
+# Adicionando os @propety para pemitir que o Iterador acesse os dados
+    @property
+    def saldo(self): return self._saldo
+    
+    @property
+    def numero(self): return self._numero
+    
+    @property
+    def agencia(self): return self._agencia
+    
+    @property
+    def cliente(self): return self._cliente
 
 # Inicio da classe Conta Corrente que estende de Conta
 class ContaCorrente(Conta):
@@ -79,6 +103,7 @@ class Historico:
 # fim da classe Historico
 
 
+#---- inicio das classes de transação-------
 # Inicio da classe Transacao
 class Transacao(ABC):
     pass
@@ -86,13 +111,13 @@ class Transacao(ABC):
 
 
 # Inicio da classe Saque que estende Transacao
-class Saque:
+class Saque(Transacao):
     pass
 # Fim da classe Saque
 
 
 # Inicio da classe Deposito que estende Transacao
-class Deposito:
+class Deposito(Transacao):
     pass
 # Fim da classe Deposito
 
@@ -111,7 +136,10 @@ def menu():
     pass
 
 def filtar_cliente(cpf, clientes):
-    pass
+    for cliente in clientes: # FOR será usado para percorrer cada objeto cliente de uma lista de clientes
+        if cliente.cpf == cpf: # Verifica se o cpf do objeto é igual ao cpf colocado
+            return cliente # Caso encontre ele irá retornar o cliente encontrado
+    return None # Se o loop acabar e não encontrar o cliente ele irá retornar None
 
 
 @log_transacao
