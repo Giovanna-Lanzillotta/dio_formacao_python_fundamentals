@@ -60,3 +60,16 @@ file = open('example.txt', 'r')
 print(file.readline())
 file.close()
 ```
+
+## Escrevendo em um arquivo
+
+-  Pode ser usado `write()` ou `writelines()` para escrever emum arquivo.
+*Lembre-se:* De abrir o arquivo no modo correto.
+
+### Exemplo de código
+
+```python
+file = open('example.txt', 'w')
+file.write("Olá,mundo!")
+file.close()
+```
