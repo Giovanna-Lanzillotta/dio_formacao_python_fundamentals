@@ -150,3 +150,43 @@ with open('arquivo.txt', 'r', encoding='utf-8') as arquivo:
 with open('arquivo.txt', 'w', encoding='utf-8') as arquivo:
         # Operações de escrita com codificação UTF-8
 ```
+
+## Trabalhando com arquivos CSV
+
+### Lendo arquivos CSV
+
+O python fornece um módulo chamado `'csv'` para lidar facilmente com arquivos CSV.
+
+#### Exemplo de código
+```python
+import csv
+
+with open('example.csv','r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)
+```
+
+### Escrevendo em arquivos CSV
+
+Da mesma forma podemos utilizar o módulo `'csv'` para escrever arquivos CSV.
+
+#### Exemplo de código
+```python
+import csv
+
+with open('example.csv','w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["nome", "idade"])
+    writer.writerow(["Ana", 30])
+    writer.writerow(["João", 25])
+
+```
+
+# Práticas recomendadas
+
+- Usar csv.reader e csv.writer para manipular arquivos CSV.
+- Fazer o tratamento correto das exceções.
+- Ao gravar arquivos CSV definir o argumento newline=" no método 'open'.
+
+🔗 Python documentação CSV : https://docs.python.org/3/library/csv.html
