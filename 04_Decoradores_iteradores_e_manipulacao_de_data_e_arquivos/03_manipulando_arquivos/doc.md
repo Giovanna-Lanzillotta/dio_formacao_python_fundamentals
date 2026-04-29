@@ -73,3 +73,25 @@ file = open('example.txt', 'w')
 file.write("Olá,mundo!")
 file.close()
 ```
+
+## Gerenciando arquivos e diretórios
+
+- Podemos criar, renomear e xcluir arquivos e diretórios usando os módulos `'os'` e `'shutil'`.
+
+### Exemplo de código
+```python
+import os
+import shutil
+
+# Criar um diretório
+os.mkdir("exemplo")
+
+# Renomear um arquivo
+os.rename("old.text", "new.text")
+
+# Remover um arquivo
+os.remove("unwanted.txt")
+
+# Mover um arquivo
+shutil.move("source.txt", "destination.txt")
+```
