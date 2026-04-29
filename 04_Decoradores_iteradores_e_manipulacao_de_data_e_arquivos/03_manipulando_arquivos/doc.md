@@ -95,3 +95,27 @@ os.remove("unwanted.txt")
 # Mover um arquivo
 shutil.move("source.txt", "destination.txt")
 ```
+
+## Tratamente de exceções em manipulação de arquivos
+
+### Exceções mais comuns
+
+- **FileNotFoundError:** Lançada quando o arquivo que está sendo aberto não pode ser encontrado no diretório especificado.
+
+- **PermissionError:** Lançada quando ocorre uma tentativa de abrir um arquivo sem as permissões adequadas para leitura ou gravação.
+
+- **IOError:** Lançada quando ocorre um erro geral de E/S (entrada/saída) ao trabalhar com o arquivo, como problemas de permissão, falta de espaço em disco, entre outros.
+
+- **UnicodeDecodeError:** Lançada quando ocorre um erro a tentar decodificar os dados de um arquivo de texto usando uma codificação inadequada.
+
+- **UnicocodeEncodeError:** Lançada quando ocoore um erro ao tentar codificae dados em uma determinada codificação ao gravar em um arquivo de texto.
+
+- **IsADirectoryError:** Lançada quando é feita uma tentativa de abrir um diretório em vez de um arquivo de texto.
+
+### Exemplo de código
+```python
+try:
+    file = open('non_existent_file.txt','r')
+except FileNotFoundError:
+    print("Arquivo não encontrado.")
+```
