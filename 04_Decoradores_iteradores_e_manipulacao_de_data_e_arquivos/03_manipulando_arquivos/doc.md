@@ -119,3 +119,34 @@ try:
 except FileNotFoundError:
     print("Arquivo não encontrado.")
 ```
+
+## Boas práticas na manipulação de arquivos
+
+### Bloco with
+
+Use o gerenciament de contexto(context manager) com a declaração 'with'. O gerenciamento de contexto permite trabalhar com arquivos de forma segura, garantindo que eles sejam fechados corretamente, mesmo em caso e exceções.
+
+#### Exemplo de código
+
+```python
+with open('arquivo.txt', 'r') as arquivo:
+    # Faça operações de leitura/gravação no arquivo
+```
+
+### Verifique se o arquivo foi aberto com sucesso
+
+É recomendado verificar se o arquivo foi aberto corretamente antes de exceutar operações de leitura ou gravação nele.
+
+### Use a codificação correta
+
+Certifique-se de usar a codificação correta ao ler ou gravar arquivos de texto. O argumento 'enconding' da função 'open()' permite especificar a codificação.
+
+#### Exemplo de código
+
+```python
+with open('arquivo.txt', 'r', encoding='utf-8') as arquivo:
+    # Operações de leitura com codificação UTF-8
+
+with open('arquivo.txt', 'w', encoding='utf-8') as arquivo:
+        # Operações de escrita com codificação UTF-8
+```
