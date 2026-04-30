@@ -1,0 +1,3 @@
+[2026-04-30 00:53:04] Função 'criar_conta' executada com argumentos (1, [], []) e {}. Retornou None
+[2026-04-30 00:53:10] Função 'criar_cliente' executada com argumentos ([],) e {}. Retornou None
+[2026-04-30 01:02:01] Função 'criar_cliente' executada com argumentos ([<PessoaFisica: ( '1')>],) e {}. Retornou None

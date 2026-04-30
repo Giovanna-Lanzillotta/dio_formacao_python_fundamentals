@@ -1,8 +1,12 @@
 # DESAFIO
 
 import textwrap
-from abc import ABC,abstractclassmethod, abstractproperty
-from datetime import datetime
+from abc import ABC,abstractclassmethod, abstractmethod, abstractproperty
+from datetime import datetime, timezone
+from pathlib import Path
+
+# Define o caminho da pasta raiz do projeto, garantindo que o código encontre os arquivos de log e dados independente de onde for executado
+ROOT_PATH = Path(__file__).parent
 
 # Aqui esta a parte do iterador personalizado
 # Inicio da classe ContaIterador
@@ -17,7 +21,6 @@ class ContaIterador:
     def __next__(self):
         try:
             conta = self.contas[self._contador]
-            self._contador +=1
             return f"""
             🏦 Agência:\t{conta.agencia}
             🏧Número:\t{conta.numero}
@@ -35,7 +38,7 @@ class ContaIterador:
 class Cliente:
     def __init__(self, endereco):
         self.endereco = endereco
-        self.conta = [] # cria uma lista vazia para armazenar as conta de um cliente
+        self.contas = [] # cria uma lista vazia para armazenar as conta de um cliente
         self.indice_conta = 0 # contador para saber o numero de contas
 
     def realizar_transacao(self, conta, transacao):
@@ -60,6 +63,9 @@ class PessoaFisica(Cliente):
         self.nome = nome
         self.cpf = cpf
         self.data_nascimento = data_nascimento
+    
+    def __repr__(self) -> str:
+      return f"<{self.__class__.__name__}: ( '{self.cpf}')>"
 #Fim da classe Pessoa Fisica
 
 
@@ -144,13 +150,25 @@ class Transacao(ABC):
 
 # Inicio da classe Saque que estende Transacao
 class Saque(Transacao):
-    pass
+    @property
+    @abstractmethod
+    def valor(self): 
+        pass
+
+    @abstractmethod
+    def registrar(self, conta): 
+        pass
 # Fim da classe Saque
 
 
 # Inicio da classe Deposito que estende Transacao
 class Deposito(Transacao):
-    pass
+    
+    def __init__(self, valor):
+        self._valor = valor
+
+    def registrar(self, conta):
+        conta.Historico.adicionar_transacao(self)
 # Fim da classe Deposito
 
 
@@ -158,14 +176,37 @@ class Deposito(Transacao):
 def log_transacao(func):
     def envelope(*args, **kwargs):
         resultado = func(*args, **kwargs)
-        data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"\n[{data_hora}] Função executada: {func.__name__.upper()}")
+
+        # Obtém a data e hora atual e formata numa string no formato padrão
+        data_hora = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+        # modo a = append, que adiciona novas informações no arquivo
+        with open(ROOT_PATH / "log.txt", "a") as arquivo:
+            arquivo.write(
+            f"[{data_hora}] Função '{func.__name__}' executada com argumentos {args} e {kwargs}. Retornou {resultado}\n"
+            )
+
         return resultado
+    
     return envelope
 
-
+# Aqui fica o menu
 def menu():
-    pass
+    menu_text = """\n
+    ================ MENU ================
+    [d]\tDepositar
+    [s]\tSacar
+    [e]\tExtrato
+    [nc]\tNova Conta
+    [lc]\tListar Contas
+    [nu]\tNovo Usuário
+    [q]\tSair
+    ======================================
+    => """
+
+    # strip faz com que o menu não quebre
+    return input(textwrap.dedent(menu_text)).strip().lower()
+# Aqui termina o menu
 
 def filtar_cliente(cpf, clientes):
     for cliente in clientes: # FOR será usado para percorrer cada objeto cliente de uma lista de clientes
@@ -178,7 +219,20 @@ def recuperar_conta_cliente(cliente):
 
 @log_transacao
 def depositar(clientes):
-    pass
+    cpf = input("Informe o CPF do cliente: ")
+    cliente = filtar_cliente(cpf, clientes)
+
+    if not cliente:
+        print("\nCliente não encontrado ❌ ")
+
+    valor = float(input("Informe o valor do depósito: "))
+    transacao = Deposito(valor)
+
+    conta = recuperar_conta_cliente(cliente)
+    if not conta:
+        return
+
+    cliente.realizar_transacao(conta, transacao)
 
 @log_transacao
 def sacar(clientes):
@@ -218,9 +272,32 @@ def exibir_extrato(clientes):
     print("==============================")
 
 
+# Aqui começa a função criar_cliente
 @log_transacao
 def criar_cliente(clientes):
-    pass
+    cpf = input("Informe o CPF: ")
+
+    #Após ver o cpf verifica se o cliente já possui cadastro
+    cliente = filtar_cliente(cpf, clientes)
+
+    if cliente:
+        print("Já existe cliente com este CPF cadastrado")
+        return
+
+    nome = input("Infrme o nome completo: ")
+
+    data_nascimento = input("Informe a data de nascimento(dd-mm-aaaa): ")
+
+    endereco = input("Informe o endereço: ")
+
+    # Após preencher os dados um novo cliente é cadastrado
+    novo_cliente = PessoaFisica(nome=nome, cpf=cpf, data_nascimento=data_nascimento, endereco=endereco)
+
+    # novo_cliente é adicionado a clientes
+    clientes.append(novo_cliente)
+    print("🎉 Cliente cadastrado com sucesso 🎉")
+# Aqui termica a função criar_cliente
+
 
 @log_transacao
 def criar_conta(numero_conta, clientes, contas):
@@ -262,3 +339,7 @@ def main():
             break
         else:
             print("\n Operação inválida, por favor selecione novamente a operação desejada!")
+
+
+# Chama a função main
+main()
